@@ -52,10 +52,10 @@ def get_data(media: str) -> list:
         medias.append(
             {
                 "title_default": "$title",
-                "line1_default": "$rating",
+                "line1_default": "$genres",
                 "line2_default": "$release",
-                "line3_default": "$runtime",
-                "line4_default": "$studio",
+                "line3_default": "$rating",
+                "line4_default": "$cast",
                 "icon": "mdi:arrow-down-bold",
             }
         )
@@ -64,6 +64,9 @@ def get_data(media: str) -> list:
             medias.append(
                 dict(
                     title=media["name"],
+                    rating=media.get("imdbRating"),
+                    genres=media.get("genres"),
+                    cast=media.get("cast"),
                     poster=media.get("poster"),
                     fanart=media.get("background"),
                     runtime=media.get("released"),
