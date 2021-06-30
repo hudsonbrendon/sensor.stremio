@@ -54,8 +54,8 @@ def get_data(media: str) -> list:
                 "title_default": "$title",
                 "line1_default": "$genres",
                 "line2_default": "$release",
-                "line3_default": "IMDB: $runtime",
-                "line4_default": "$cast",
+                "line3_default": "$runtime",
+                "line4_default": "IMDB: $rating",
                 "icon": "mdi:arrow-down-bold",
             }
         )
@@ -66,12 +66,11 @@ def get_data(media: str) -> list:
                     title=media["name"],
                     rating=media.get("imdbRating"),
                     genres=media.get("genres"),
-                    cast=media.get("cast"),
                     poster=media.get("poster"),
                     fanart=media.get("background"),
-                    runtime=media.get("released"),
-                    release=media.get("released"),
-                    airdate=media.get("released"),
+                    runtime=media.get("released").split("T")[0],
+                    release=media.get("released").split("T")[0],
+                    airdate=media.get("released").split("T")[0],
                 )
             )
     else:
