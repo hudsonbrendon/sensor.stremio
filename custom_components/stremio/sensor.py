@@ -40,44 +40,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 BASE_URL = "https://v3-cinemeta.strem.io/catalog/{}/top.json"
 
 
-def get_data(media: str) -> list:
-    """Get The request from the api"""
-    medias = []
-    url = BASE_URL.format(
-        media,
-    )
-
-    response = requests.get(url)
-    if response.ok:
-        medias.append(
-            {
-                "title_default": "$title",
-                "line1_default": "$genres",
-                "line2_default": "$release",
-                "line3_default": "$runtime",
-                "line4_default": "IMDB: $rating",
-                "icon": "mdi:arrow-down-bold",
-            }
-        )
-
-        for media in response.json().get("metas"):
-            medias.append(
-                dict(
-                    title=media["name"],
-                    rating=media.get("imdbRating"),
-                    genres=media.get("genres"),
-                    poster=media.get("poster"),
-                    fanart=media.get("background"),
-                    runtime=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
-                    release=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
-                    airdate=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
-                )
-            )
-    else:
-        _LOGGER.error("Cannot perform the request")
-    return medias
-
-
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Setup the currency sensor"""
 
@@ -96,13 +58,14 @@ class StremioSensor(Entity):
         self._hass = hass
         self._interval = interval
         self._media = media
-        self._name = "Series"
         self._medias = []
 
     @property
     def name(self):
         """Return the name sensor"""
-        return self._name
+        if self._media == "movie":
+            return f"Stremio movies"
+        return f"Stremio {self._media}"
 
     @property
     def icon(self):
@@ -122,4 +85,35 @@ class StremioSensor(Entity):
 
     def update(self):
         """Get the latest update fron the api"""
-        self._medias = get_data(self._media)
+        url = BASE_URL.format(
+            self._media,
+        )
+
+        response = requests.get(url)
+        if response.ok:
+            self._medias.append(
+                {
+                    "title_default": "$title",
+                    "line1_default": "$genres",
+                    "line2_default": "$release",
+                    "line3_default": "$runtime",
+                    "line4_default": "$rating",
+                    "icon": "mdi:arrow-down-bold",
+                }
+            )
+
+            for media in response.json().get("metas"):
+                self._medias.append(
+                    dict(
+                        title=media["name"],
+                        rating=media.get("imdbRating"),
+                        genres=media.get("genres"),
+                        poster=media.get("poster"),
+                        fanart=media.get("background"),
+                        runtime=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
+                        release=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
+                        airdate=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
+                    )
+                )
+        else:
+            _LOGGER.error("Cannot perform the request")
