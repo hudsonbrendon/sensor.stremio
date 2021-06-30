@@ -68,9 +68,9 @@ def get_data(media: str) -> list:
                     genres=media.get("genres"),
                     poster=media.get("poster"),
                     fanart=media.get("background"),
-                    runtime=media.get("released").split("T")[0],
-                    release=media.get("released").split("T")[0],
-                    airdate=media.get("released").split("T")[0],
+                    runtime=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
+                    release=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
+                    airdate=media.get("released").split("T")[0] if media.get("released") else media.get("released"),
                 )
             )
     else:
