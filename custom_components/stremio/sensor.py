@@ -54,7 +54,7 @@ def get_data(media: str) -> list:
                 "title_default": "$title",
                 "line1_default": "$genres",
                 "line2_default": "$release",
-                "line3_default": "$rating",
+                "line3_default": "IMDB: $runtime",
                 "line4_default": "$cast",
                 "icon": "mdi:arrow-down-bold",
             }
